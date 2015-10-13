@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<http:listener-config name="HTTP_Listener_Configuration33"
+		host="0.0.0.0" port="9010" doc:name="HTTP Listener Configuration" />
+	<flow name="rest-approach33Flow">
+		<http:listener config-ref="HTTP_Listener_Configuration33"
+			path="/restapproach1/*" doc:name="HTTP" />
+		<logger
+			message="Request received.. #[message.inboundProperties.'http.request.uri'], #[message.inboundProperties.'http.request.uri' == '/restapproach1/test']"
+			level="INFO" />
+		<!-- <message-filter doc:name="Remove FavIcon">
+			<not-filter>
+				<wildcard-filter pattern="/favicon.ico"
+					caseSensitive="true" />
+			</not-filter>
+		</message-filter>
+		<choice doc:name="Handle HTTP Request">
+			<when
+				expression="#[message.inboundProperties.'http.request.uri' == '/restapproach1/test']">
+				<choice doc:name="Choice">
+					<when expression="#[message.inboundProperties.'http.method' == 'GET']">
+						<scripting:component doc:name="HTTP GET">
+							<scripting:script engine="Groovy"><![CDATA[payload = "Welcome to HTTP GET REQUEST"]]></scripting:script>
+						</scripting:component>
+					</when>
+					<when expression="#[message.inboundProperties.'http.method' == 'POST']">
+						<scripting:component doc:name="HTTP POST">
+							<scripting:script engine="Groovy"><![CDATA[payload = "Welcome to HTTP POST REQUEST"]]></scripting:script>
+						</scripting:component>
+					</when>
+					<otherwise>
+						<http:response-builder status="405"
+							contentType="text/xml" doc:name="Copy_of_HTTP Response Builder" />
+						<set-payload value="Invalid HTTP Method" doc:name="Copy_of_Set Payload" />
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise>
+				<http:response-builder contentType="text/xml"
+					doc:name="HTTP Response Builder" status="400" />
+				<set-payload value="Invalid HTTP Request URL" doc:name="Set Payload" />
+			</otherwise>
+		</choice> -->
+		<set-payload value="TESTING"/>
+	</flow>
+</mule>

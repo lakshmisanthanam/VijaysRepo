@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:rest-router="http://www.mulesoft.org/schema/mule/rest-router"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/rest-router http://www.mulesoft.org/schema/mule/rest-router/1.0/mule-rest-router.xsd">
+	
+	<rest-router:config/>
+
+	<flow name="rest-approach2Flow">
+		<http:listener config-ref="HTTP_Listener_Configuration1"
+			path="/restapproach2/*" doc:name="HTTP" />
+		
+		<rest-router:router templateUri="/restapproach2/get">
+			<rest-router:get>
+				<scripting:component doc:name="HTTP GET">
+					<scripting:script engine="Groovy"><![CDATA[payload = "Welcome to HTTP GET REQUEST"]]></scripting:script>
+				</scripting:component>
+			</rest-router:get>
+			<rest-router:post>
+				<scripting:component doc:name="HTTP POST">
+					<scripting:script engine="Groovy"><![CDATA[payload = "Welcome to HTTP POST REQUEST"]]></scripting:script>
+				</scripting:component>
+			</rest-router:post>
+		</rest-router:router>
+		<http:response-builder status="400"
+			doc:name="Return 400 For bad URL">
+			<set-payload
+				value="Unknown resource: #[message.inboundProperties['http.request.path']]" />
+		</http:response-builder>
+		
+	</flow>
+</mule>

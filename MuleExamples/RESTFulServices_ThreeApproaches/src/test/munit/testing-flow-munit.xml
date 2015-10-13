@@ -1,0 +1,27 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	version="EE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd">
+
+	<munit:config name="munit" doc:name="Munit configuration"/>
+	<spring:beans>
+		<spring:import resource="classpath:testing-flow.xml"/>
+	</spring:beans>
+	
+	<!-- TEST HTTP 400 error scenario -->
+	<munit:test description="Unit Test case asserting scenario 1">
+		<munit:set>
+			<munit:inbound-properties>
+				<munit:inbound-property key="http.request.uri" value="/restapproach1/test"/>
+			</munit:inbound-properties>
+		</munit:set>
+		<flow-ref name="rest-approach33Flow" />
+		<munit:assert-payload-equals expectedValue="TESTING"/>
+	</munit:test>
+</mule>

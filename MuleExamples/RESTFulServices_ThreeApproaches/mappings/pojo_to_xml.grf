@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="vijay" created="Mon Aug 03 14:43:30 CDT 2015" description="Pojo To XML" guiVersion="3.4.4.P" id="1438727646453" licenseCode="Unlicensed" licenseType="Unknown" modified="Mon Aug 03 14:43:30 CDT 2015" modifiedBy="vijay" name="Pojo_To_XML" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="f21c8bc8-9b74-4b46-b7ea-35483f4c7877">
+<Record fieldDelimiter="," name="AddProductRequest" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/productId" containerType="SINGLE" label="productId" name="productId" type="string"/>
+<Field __index="1" __sourcePath="{}/object/quantity" containerType="SINGLE" label="quantity" name="quantity" type="integer"/>
+<Field __index="2" __sourcePath="{}/object/requestType" containerType="SINGLE" label="requestType" name="requestType" type="string"/>
+<Field __index="3" __sourcePath="{}/object/sessionId" containerType="SINGLE" label="sessionId" name="sessionId" type="string"/>
+</Record>
+</Metadata>
+<Metadata __filteredMetadata="true" __index="0" __referenceCounter="1" __schemaType="{http://vijay.services.org/ShoppingCartCheckout}AddProductRequest" __sourcePath="{http://vijay.services.org/ShoppingCartCheckout=ns0}/ns0:AddProductRequest" _dataStructure="OBJECT" _id="__id" _type="Output" id="985e11bc-276a-4d64-ac00-b2401885c810">
+<Record fieldDelimiter="," name="AddProductRequest" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __schemaType="{http://vijay.services.org/ShoppingCartCheckout}AddProductRequest" __sourcePath="{http://vijay.services.org/ShoppingCartCheckout=ns0}/ns0:AddProductRequest/ns0:sessionId" containerType="SINGLE" label="sessionId" name="sessionId" type="string"/>
+<Field __index="1" __schemaType="{http://vijay.services.org/ShoppingCartCheckout}AddProductRequest" __sourcePath="{http://vijay.services.org/ShoppingCartCheckout=ns0}/ns0:AddProductRequest/ns0:productId" containerType="SINGLE" label="productId" name="productId" type="string"/>
+<Field __index="2" __schemaType="{http://vijay.services.org/ShoppingCartCheckout}AddProductRequest" __sourcePath="{http://vijay.services.org/ShoppingCartCheckout=ns0}/ns0:AddProductRequest/ns0:quantity" containerType="SINGLE" label="quantity" name="quantity" type="integer"/>
+<Field __index="3" __schemaType="{http://vijay.services.org/ShoppingCartCheckout}AddProductRequest" __sourcePath="{http://vijay.services.org/ShoppingCartCheckout=ns0}/ns0:AddProductRequest/ns0:RequestType" containerType="SINGLE" label="RequestType" name="RequestType" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiName="Pojo READER" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath=".">
+  <Mapping cloverField="productId" trim="true" xpath="productId"/>
+  <Mapping cloverField="quantity" trim="true" xpath="quantity"/>
+  <Mapping cloverField="requestType" trim="true" xpath="requestType"/>
+  <Mapping cloverField="sessionId" trim="true" xpath="sessionId"/>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="org.vijay.services.rest.AddProductRequest"/>
+  <typed-object type="org.vijay.services.rest.AddProductRequest">
+    <typed-object-ref name="productId" type-ref="java.lang.String"/>
+    <typed-object-ref name="quantity" type-ref="int"/>
+    <typed-object-ref name="requestType" type-ref="java.lang.String"/>
+    <typed-object-ref name="sessionId" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="int"/>
+</schema-object>
+]]></attr>
+</Node>
+<Node cacheInMemory="true" charset="UTF-8" enabled="enabled" fileURL="dict:outputPayload" guiName="XML WRITER" guiX="900" guiY="20" id="EXT_XML_WRITER0" type="EXT_XML_WRITER" xmlSchemaURL="./src/main/app/ShoppingCartCheckout.xsd">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<clover:element clover:name="ns0:AddProductRequest" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" xmlns:ns0="http://vijay.services.org/ShoppingCartCheckout" clover:inPort="0">
+  <clover:element clover:name="ns0:sessionId">$0.sessionId</clover:element>
+  <clover:element clover:name="ns0:productId">$0.productId</clover:element>
+  <clover:element clover:name="ns0:quantity">$0.quantity</clover:element>
+  <clover:element clover:name="ns0:RequestType">$0.RequestType</clover:element>
+</clover:element>]]></attr>
+<attr name="_data_format"><![CDATA[XML]]></attr>
+<attr name="__rootGlobalElementName"><![CDATA[{http://vijay.services.org/ShoppingCartCheckout}AddProductRequest]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'object' -&gt; 'ns0:AddProductRequest'" guiX="460" guiY="20" id="FOREACH_OBJECT_NS0_ADD_PRODUCT_REQUEST" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+output.productId = input.productId;
+output.quantity = input.quantity;
+output.RequestType = input.requestType;
+output.sessionId = input.sessionId;
+]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="f21c8bc8-9b74-4b46-b7ea-35483f4c7877" outPort="Port 0 (out)" toNode="FOREACH_OBJECT_NS0_ADD_PRODUCT_REQUEST:0"/>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_NS0_ADD_PRODUCT_REQUEST:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="985e11bc-276a-4d64-ac00-b2401885c810" outPort="Port 0 (out)" toNode="EXT_XML_WRITER0:0"/>
+</Phase>
+</Graph>

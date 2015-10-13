@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://vijay.services.org/ShoppingCartCheckout/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ShoppingCartCheckout"
+	targetNamespace="http://vijay.services.org/ShoppingCartCheckout/"
+	xmlns:xsd1="http://vijay.services.org/ShoppingCartCheckout">
+	<wsdl:types>
+		<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			elementFormDefault="qualified">
+			<xsd:import namespace="http://vijay.services.org/ShoppingCartCheckout"
+				schemaLocation="ShoppingCartCheckout.xsd">
+			</xsd:import>
+		</xsd:schema>
+    </wsdl:types>
+	<wsdl:message name="createSessionRequest">
+		<wsdl:part name="parameters" element="xsd1:CreateSessionRequest" />
+	</wsdl:message>
+	<wsdl:message name="createSessionResponse">
+		<wsdl:part name="parameters" element="xsd1:CreateSessionResponse" />
+	</wsdl:message>
+	<wsdl:message name="addProductRequest">
+		<wsdl:part name="parameters" element="xsd1:AddProductRequest"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="addProductResponse">
+		<wsdl:part name="parameters" element="xsd1:AddProductResponse"></wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="ShoppingCartCheckout">
+		<wsdl:operation name="createSession">
+			<wsdl:input message="tns:createSessionRequest" />
+			<wsdl:output message="tns:createSessionResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="addProduct">
+			<wsdl:input message="tns:addProductRequest"></wsdl:input>
+			<wsdl:output message="tns:addProductResponse"></wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="ShoppingCartCheckoutSOAP" type="tns:ShoppingCartCheckout">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="createSession">
+			<soap:operation
+				soapAction="http://vijay.services.org/ShoppingCartCheckout/createSession"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="addProduct">
+			<soap:operation
+				soapAction="http://vijay.services.org/ShoppingCartCheckout/addProduct"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ShoppingCartCheckout">
+		<wsdl:port binding="tns:ShoppingCartCheckoutSOAP" name="ShoppingCartCheckoutSOAP">
+			<soap:address location="http://localhost:29001" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

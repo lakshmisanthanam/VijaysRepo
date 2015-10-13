@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:set payload="" xmlns:p="http://www.mulesoft.org/schema/mule/munit" xmlns:p1="http://www.mulesoft.org/schema/mule/core" xmlns:p2="http://www.springframework.org/schema/beans" xmlns:p3="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/munit munit.xsd ">
+  <p1:annotations/>
+  <p:invocation-properties ref=""/>
+  <p:inbound-properties ref=""/>
+  <p:session-properties ref=""/>
+  <p:outbound-properties ref=""/>
+</p:set>

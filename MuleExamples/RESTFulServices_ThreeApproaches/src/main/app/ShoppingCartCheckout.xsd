@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://vijay.services.org/ShoppingCartCheckout" xmlns:tns="http://vijay.services.org/ShoppingCartCheckout" elementFormDefault="qualified">
+
+    <complexType name="CreateSessionRequest">
+    	<sequence>
+    		<element name="sourceName" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="CreateSessionResponse">
+    	<sequence>
+    		<element name="sessionId" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="AddProductRequest">
+    	<sequence>
+    		<element name="sessionId" type="string"></element>
+    		<element name="productId" type="string"></element>
+    		<element name="quantity" type="int"></element>
+    		<element name="RequestType" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="AddProductResponse">
+    	<sequence>
+    		<element name="sessionId" type="string"></element>
+    		<element name="status" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="CancelOrderRequest">
+    	<sequence>
+    		<element name="sessionId" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="CancelOrderResponse">
+    	<sequence>
+    		<element name="sessionId" type="string"></element>
+    		<element name="status" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="CheckoutRequest">
+    	<sequence>
+    		<element name="sessionId" type="string"></element>
+    		<element name="cashOrCredit" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="CheckoutResponse">
+    	<sequence>
+    		<element name="sessionId" type="string"></element>
+    		<element name="status" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="AddProductRequest" type="tns:AddProductRequest"></element>
+
+    <element name="AddProductResponse" type="tns:AddProductResponse"></element>
+
+    <element name="CancelOrderRequest" type="tns:CancelOrderRequest"></element>
+    
+    <element name="CancelOrderResponse"
+    	type="tns:CancelOrderResponse">
+    </element>
+    
+    <element name="CheckoutRequest" type="tns:CheckoutRequest"></element>
+    
+    <element name="CheckoutResponse" type="tns:CheckoutResponse"></element>
+    
+    <element name="CreateSessionRequest"
+    	type="tns:CreateSessionRequest">
+    </element>
+    
+    <element name="CreateSessionResponse"
+    	type="tns:CreateSessionResponse">
+    </element>
+</schema>
