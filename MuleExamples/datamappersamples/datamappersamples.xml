@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+	<data-mapper:config name="CSV_to_XML"
+		transformationGraphPath="csv_to_xml.grf" doc:name="CSV_to_XML" />
+    <data-mapper:config name="JSON_To_Map" transformationGraphPath="json_to_map.grf" doc:name="JSON_To_Map"/>
+    <data-mapper:config name="CSV_To_XML" transformationGraphPath="csv_to_xml_1.grf" doc:name="CSV_To_XML"/>
+    <data-mapper:config name="CSV_to_xml_with_flow_ref_lookup" transformationGraphPath="csv_to_xml_with_flow_ref_lookup.grf" doc:name="CSV_to_xml_with_flow_ref_lookup"/>
+    <data-mapper:config name="CSV_2_XML_Flow_Ref" transformationGraphPath="csv_2_xml_flow_ref.grf" doc:name="CSV_2_XML_Flow_Ref"/>
+    <data-mapper:config name="CSV_To_JSON" transformationGraphPath="csv_to_json.grf" doc:name="CSV_To_JSON"/>
+    <data-mapper:config name="JSON_2_XML" transformationGraphPath="json_2_xml.grf" doc:name="JSON_2_XML"/>
+    <data-mapper:config name="JSON_To_XML" transformationGraphPath="json_to_xml.grf" doc:name="JSON_To_XML"/>
+	<flow name="CSV_2_XML_FLOW">
+		<file:inbound-endpoint
+			path="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\input"
+			moveToDirectory="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\archive"
+			pollingFrequency="5000" responseTimeout="10000" doc:name="File" />
+		<data-mapper:transform config-ref="CSV_to_XML"
+			doc:name="CSV to XML" />
+		<byte-array-to-string-transformer
+			doc:name="Byte Array to String" />
+		<logger message="#[payload]" level="INFO" doc:name="Logger" />
+	</flow>
+	<flow name="CSV_2_XML_WITH_FLOWREF_LOOKUP_FLOW">
+		<file:inbound-endpoint
+			path="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\input_flowref"
+			moveToDirectory="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\archive"
+			pollingFrequency="5000" responseTimeout="10000" doc:name="File" />
+        <data-mapper:transform config-ref="CSV_2_XML_Flow_Ref" doc:name="CSV_2_XML_Flow_Ref"/>
+		
+		<byte-array-to-string-transformer
+			doc:name="Byte Array to String" />
+		<logger message="#[payload]" level="INFO" doc:name="Logger" />
+	</flow>
+    <flow name="GroovyScriptLookup">
+        <logger message="Logging Author  Name : #[payload.author_name]" level="INFO" doc:name="Logger"/>
+        <scripting:component doc:name="Groovy">
+            <scripting:script engine="Groovy"><![CDATA[return ["new_author_name":" Lakshminarasimhan"]]]></scripting:script>
+        </scripting:component>
+        <logger message="Logging New Author  Name : #[payload.new_author_name]" level="INFO" doc:name="Logger"/>
+    </flow>
+	
+	<flow name="CSV_2_JSON_FLOW">
+		<file:inbound-endpoint
+			path="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\input_4json"
+			moveToDirectory="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\archive"
+			pollingFrequency="5000" responseTimeout="10000" doc:name="File" />
+        <data-mapper:transform config-ref="CSV_To_JSON" doc:name="CSV To JSON"/>
+		
+		<byte-array-to-string-transformer
+			doc:name="Byte Array to String" />
+		<logger message="#[payload]" level="INFO" doc:name="Logger" />
+	</flow>
+	
+	<flow name="JSON_2_XML_FLOW">
+		<file:inbound-endpoint
+			path="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\input_4json"
+			moveToDirectory="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\archive"
+			pollingFrequency="5000" responseTimeout="10000" doc:name="File" />
+        <data-mapper:transform config-ref="JSON_2_XML" doc:name="JSON_2_XML"/>
+		
+		<byte-array-to-string-transformer
+			doc:name="Byte Array to String" />
+		<logger message="#[payload]" level="INFO" doc:name="Logger" />
+	</flow>
+	
+	
+	<flow name="JSON_2_XML_FROM_JSON_SCHEMA_FLOW">
+		<file:inbound-endpoint
+			path="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\input_from_json_2_xml_using_schema"
+			moveToDirectory="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\archive"
+			pollingFrequency="5000" responseTimeout="10000" doc:name="File" />
+        <data-mapper:transform config-ref="JSON_To_XML" doc:name="JSON To XML"/>
+		
+		<byte-array-to-string-transformer
+			doc:name="Byte Array to String" />
+		<logger message="#[payload]" level="INFO" doc:name="Logger" />
+	</flow>
+</mule>

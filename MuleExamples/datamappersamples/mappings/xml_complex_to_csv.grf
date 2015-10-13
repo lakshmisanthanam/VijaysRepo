@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="vijay" created="Mon Sep 28 15:05:45 CDT 2015" description="XML COMPLEX To CSV" guiVersion="3.4.4.P" id="1443668046790" licenseCode="Unlicensed" licenseType="Unknown" modified="Mon Sep 28 15:05:45 CDT 2015" modifiedBy="vijay" name="XML_COMPLEX_To_CSV" preview-file="${Project_Home}/src/main/api/XML_2_CSV_COMPLEX.xml" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __filteredMetadata="false" __index="0" __referenceCounter="1" __sourcePath="{}/contact_list" _dataStructure="OBJECT" _id="__id" _type="Input" id="09b74f67-5bbf-45d2-a673-ef3472c34b7c">
+<Record fieldDelimiter="," name="contact_list" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="8" __sourcePath="{}/contact_list/@type" containerType="SINGLE" label="type" name="type" type="string"/>
+<Field __index="9" __sourcePath="{}/contact_list/@id" containerType="SINGLE" label="id" name="id" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/contact_list/contacts/user" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="09b74f67-5bbf-45d2-a673-ef3472c34b7c" _parent_id="__parent_id" _type="Input" id="e8423f36-0a7a-4e5e-93c1-bc66e46507c3">
+<Record fieldDelimiter="," name="user" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/contact_list/contacts/user/@name" containerType="SINGLE" label="name" name="name" type="string"/>
+<Field __index="1" __sourcePath="{}/contact_list/contacts/user/@lastname" containerType="SINGLE" label="lastname" name="lastname" type="string"/>
+<Field __index="2" __sourcePath="{}/contact_list/contacts/user/@phone" containerType="SINGLE" label="phone" name="phone" type="string"/>
+<Field __index="3" __sourcePath="{}/contact_list/contacts/user/@text()" containerType="SINGLE" label="text()" name="text" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="4" __referenceCounter="1" __sourcePath="{}/contact_list/emergency_contacts/user" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="09b74f67-5bbf-45d2-a673-ef3472c34b7c" _parent_id="__parent_id" _type="Input" id="da55ee1f-23bc-45b6-8427-6c8d366510f0">
+<Record fieldDelimiter="," name="user" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="4" __sourcePath="{}/contact_list/emergency_contacts/user/@name" containerType="SINGLE" label="name" name="name" type="string"/>
+<Field __index="5" __sourcePath="{}/contact_list/emergency_contacts/user/@lastname" containerType="SINGLE" label="lastname" name="lastname" type="string"/>
+<Field __index="6" __sourcePath="{}/contact_list/emergency_contacts/user/@phone" containerType="SINGLE" label="phone" name="phone" type="string"/>
+<Field __index="7" __sourcePath="{}/contact_list/emergency_contacts/user/@text()" containerType="SINGLE" label="text()" name="text" type="string"/>
+</Record>
+</Metadata>
+<Metadata __referenceCounter="3" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Output" id="364611cc-20ba-4a89-ad01-cbd95d575c48">
+<Record fieldDelimiter="," name="XML_2_CSV_TEMPLATE" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field containerType="SINGLE" label="Name" name="Name" size="10" type="string"/>
+<Field containerType="SINGLE" label="Lastname" name="Lastname" size="10" type="string"/>
+<Field containerType="SINGLE" eofAsDelimiter="true" label="Phone" name="Phone" size="10" type="string"/>
+<Field __artificialType="_id" name="__id" type="long"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node charset="UTF-8" enabled="enabled" excludeFields="__id" fileURL="dict:outputPayload" guiName="CSV WRITER" guiX="900" guiY="20" id="DATA_WRITER0" outputFieldNames="true" quotedStrings="true" type="DATA_WRITER">
+<attr name="_data_format"><![CDATA[CSV]]></attr>
+<attr name="__dataSourceDefinition"><![CDATA[${Project_Home}/src/main/api/XML_2_CSV_TEMPLATE.csv]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'contact_list' -&gt; 'XML_2_CSV_TEMPLATE'" guiX="460" guiY="20" id="FOREACH_CONTACT_LIST_XML_2_CSV_TEMPLATE" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = str2long(input.__id);
+//END -> DO NOT REMOVE
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'user' -&gt; 'XML_2_CSV_TEMPLATE'" guiX="460" guiY="120" id="FOREACH_USER_XML_2_CSV_TEMPLATE" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = str2long(input.__id);
+//END -> DO NOT REMOVE
+output.Name = input.name;
+output.Lastname = input.lastname;
+output.Phone = input.phone;
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'user' -&gt; 'XML_2_CSV_TEMPLATE'" guiX="460" guiY="220" id="FOREACH_USER_XML_2_CSV_TEMPLATE1" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = str2long(input.__id);
+//END -> DO NOT REMOVE
+output.Name = input.name;
+output.Lastname = input.lastname;
+output.Phone = input.phone;
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Simple Gather" guiX="680" guiY="20" id="SIMPLE_GATHER0" type="SIMPLE_GATHER"/>
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="XML READER" guiX="20" guiY="20" id="XML_READER0" type="XML_READER">
+<attr name="xmlSchemaURL"><![CDATA[./src/main/api/XML_2_VSC_SCHEMA.xsd]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath="/contact_list">
+  <Mapping cloverField="type" trim="true" xpath="@type"/>
+  <Mapping cloverField="id" trim="true" xpath="@id"/>
+  <Context generatedKey="__parent_id" outPort="1" parentKey="__id" sequenceField="__id" xpath="emergency_contacts/user">
+    <Mapping cloverField="name" trim="true" xpath="@name"/>
+    <Mapping cloverField="lastname" trim="true" xpath="@lastname"/>
+    <Mapping cloverField="phone" trim="true" xpath="@phone"/>
+    <Mapping cloverField="text" trim="true" xpath="text()"/>
+  </Context>
+  <Context generatedKey="__parent_id" outPort="2" parentKey="__id" sequenceField="__id" xpath="contacts/user">
+    <Mapping cloverField="name" trim="true" xpath="@name"/>
+    <Mapping cloverField="lastname" trim="true" xpath="@lastname"/>
+    <Mapping cloverField="phone" trim="true" xpath="@phone"/>
+    <Mapping cloverField="text" trim="true" xpath="text()"/>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[XML]]></attr>
+<attr name="__rootGlobalElementName"><![CDATA[contact_list]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="FOREACH_CONTACT_LIST_XML_2_CSV_TEMPLATE:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="364611cc-20ba-4a89-ad01-cbd95d575c48" outPort="Port 0 (out)" toNode="SIMPLE_GATHER0:0"/>
+<Edge debugMode="true" fromNode="FOREACH_USER_XML_2_CSV_TEMPLATE:0" guiBendpoints="" id="Edge4" inPort="Port 1 (in)" metadata="364611cc-20ba-4a89-ad01-cbd95d575c48" outPort="Port 0 (out)" toNode="SIMPLE_GATHER0:1"/>
+<Edge debugMode="true" fromNode="FOREACH_USER_XML_2_CSV_TEMPLATE1:0" guiBendpoints="" id="Edge6" inPort="Port 2 (in)" metadata="364611cc-20ba-4a89-ad01-cbd95d575c48" outPort="Port 0 (out)" toNode="SIMPLE_GATHER0:2"/>
+<Edge debugMode="true" fromNode="SIMPLE_GATHER0:0" guiBendpoints="" id="Edge3" inPort="Port 0 (in)" metadata="364611cc-20ba-4a89-ad01-cbd95d575c48" outPort="Port 0 (out)" toNode="DATA_WRITER0:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="09b74f67-5bbf-45d2-a673-ef3472c34b7c" outPort="Port 0 (out)" toNode="FOREACH_CONTACT_LIST_XML_2_CSV_TEMPLATE:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:1" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="da55ee1f-23bc-45b6-8427-6c8d366510f0" outPort="Port 1 (out)" toNode="FOREACH_USER_XML_2_CSV_TEMPLATE:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:2" guiBendpoints="" id="Edge5" inPort="Port 0 (in)" metadata="e8423f36-0a7a-4e5e-93c1-bc66e46507c3" outPort="Port 2 (out)" toNode="FOREACH_USER_XML_2_CSV_TEMPLATE1:0"/>
+</Phase>
+</Graph>

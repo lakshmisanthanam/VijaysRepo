@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="vijay" created="Wed Sep 09 22:43:40 CDT 2015" description="CSV to XML" guiVersion="3.4.4.P" id="1442002742417" licenseCode="Unlicensed" licenseType="Unknown" modified="Wed Sep 09 22:43:40 CDT 2015" modifiedBy="vijay" name="CSV_to_XML" preview-file="${Project_Home}/src/main/resources/Sample.csv" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="1" __schemaType="{http://www.example.org/books}Book" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books/ns0:Book" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="ad52cdbb-fc6e-4844-a92f-229de7d4e5c3" _parent_id="__parent_id" _type="Output" id="6e89c05b-b65f-46b0-9a13-5e6c18f98c1c">
+<Record fieldDelimiter="," name="Book" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __schemaType="{http://www.example.org/books}Book" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books/ns0:Book/ns0:bookId" containerType="SINGLE" label="bookId" name="bookId" type="string"/>
+<Field __index="1" __schemaType="{http://www.example.org/books}Book" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books/ns0:Book/ns0:bookName" containerType="SINGLE" label="bookName" name="bookName" type="string"/>
+<Field __index="2" __schemaType="{http://www.example.org/books}Book" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books/ns0:Book/ns0:authorName" containerType="SINGLE" label="authorName" name="authorName" type="string"/>
+</Record>
+</Metadata>
+<Metadata __filteredMetadata="false" __index="0" __referenceCounter="0" __schemaType="{http://www.example.org/books}Books" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books" _dataStructure="OBJECT" _id="__id" _type="Output" id="ad52cdbb-fc6e-4844-a92f-229de7d4e5c3">
+<Record fieldDelimiter="," name="Books" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+</Record>
+</Metadata>
+<Metadata __referenceCounter="1" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Input" id="42a0dd26-698d-4bb3-85e2-ea7dda0d52f3">
+<Record fieldDelimiter="," name="Sample" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field containerType="SINGLE" label="bookid" name="bookid" size="10" type="string"/>
+<Field containerType="SINGLE" label="bookname" name="bookname" size="10" type="string"/>
+<Field containerType="SINGLE" eofAsDelimiter="true" label="authorname" name="authorname" size="10" type="string"/>
+<Field __artificialType="_id" auto_filling="global_row_count" name="__id" type="long"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="CSV READER" guiX="20" guiY="20" id="DATA_READER0" quoteCharacter="both" quotedStrings="true" skipRows="1" trim="true" type="DATA_READER">
+<attr name="_data_format"><![CDATA[CSV]]></attr>
+<attr name="__dataSourceDefinition"><![CDATA[${Project_Home}/src/main/resources/Sample.csv]]></attr>
+</Node>
+<Node cacheInMemory="true" charset="UTF-8" enabled="enabled" fileURL="dict:outputPayload" guiName="XML WRITER" guiX="900" guiY="20" id="EXT_XML_WRITER0" type="EXT_XML_WRITER" xmlSchemaURL="./src/main/resources/books.xsd">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<clover:element clover:name="ns0:Books" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" xmlns:ns0="http://www.example.org/books">
+  <clover:element clover:name="ns0:Book" clover:inPort="0">
+    <clover:element clover:name="ns0:bookId">$0.bookId</clover:element>
+    <clover:element clover:name="ns0:bookName">$0.bookName</clover:element>
+    <clover:element clover:name="ns0:authorName">$0.authorName</clover:element>
+  </clover:element>
+</clover:element>]]></attr>
+<attr name="_data_format"><![CDATA[XML]]></attr>
+<attr name="__rootGlobalElementName"><![CDATA[{http://www.example.org/books}Books]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'Sample' -&gt; 'ns0:Book'" guiX="460" guiY="20" id="FOREACH_SAMPLE_NS0_BOOK" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = num2str(input.__id);
+output.__parent_id = num2str(input.__id);
+//END -> DO NOT REMOVE
+output.bookId = input.bookid;
+output.bookName = input.bookname;
+output.authorName = input.authorname;
+]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="DATA_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="42a0dd26-698d-4bb3-85e2-ea7dda0d52f3" outPort="Port 0 (output)" toNode="FOREACH_SAMPLE_NS0_BOOK:0"/>
+<Edge debugMode="true" fromNode="FOREACH_SAMPLE_NS0_BOOK:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="6e89c05b-b65f-46b0-9a13-5e6c18f98c1c" outPort="Port 0 (out)" toNode="EXT_XML_WRITER0:0"/>
+</Phase>
+</Graph>

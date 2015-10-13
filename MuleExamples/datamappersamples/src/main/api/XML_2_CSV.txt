@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:Products xmlns:ns0="http://www.example.org/Products">
+  <ns0:Product>
+    <ns0:Id>1</ns0:Id>
+    <ns0:Name>Mule Soft</ns0:Name>
+    <ns0:Price>99</ns0:Price>
+  </ns0:Product>
+  <ns0:Product>
+    <ns0:Id>2</ns0:Id>
+    <ns0:Name>Spring</ns0:Name>
+    <ns0:Price>129</ns0:Price>
+  </ns0:Product>
+  <ns0:Product>
+    <ns0:Id>3</ns0:Id>
+    <ns0:Name>Dancer</ns0:Name>
+    <ns0:Price>39</ns0:Price>
+  </ns0:Product>
+</ns0:Products>

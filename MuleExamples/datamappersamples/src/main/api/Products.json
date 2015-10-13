@@ -1,0 +1,27 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"definitions": {
+		"Product": {
+			"title": "Product",
+			"type": "object",
+			"properties": {
+				"productId" : { "type": "number" },
+				"productName": { "type": "string" },
+				"productType": { "type": "string" },
+				"productPrice": { "type": "number" }
+			},
+			"required": [ "productId", "productName"]
+		}
+	},
+	"title": "Products",
+	"type": "object",
+	"properties": {
+		"Products": { 
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/Product"
+			} 	
+		},
+		"ProductsDesc": { "type": "string" }
+	}
+}

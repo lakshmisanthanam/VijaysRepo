@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "books": {
+      "id": "http://jsonschema.net/books",
+      "type": "array",
+      "items": {
+        "id": "http://jsonschema.net/books/0",
+        "type": "object",
+        "properties": {
+          "book": {
+            "id": "http://jsonschema.net/books/0/book",
+            "type": "object",
+            "properties": {
+              "bookid": {
+                "id": "http://jsonschema.net/books/0/book/bookid",
+                "type": "string"
+              },
+              "book_name": {
+                "id": "http://jsonschema.net/books/0/book/book_name",
+                "type": "string"
+              },
+              "authorname": {
+                "id": "http://jsonschema.net/books/0/book/authorname",
+                "type": "string"
+              }
+            },
+            "required": [
+              "bookid",
+              "book_name",
+              "authorname"
+            ]
+          }
+        },
+        "required": [
+          "book"
+        ]
+      },
+      "required": [
+        "0"
+      ]
+    }
+  },
+  "required": [
+    "books"
+  ]
+}

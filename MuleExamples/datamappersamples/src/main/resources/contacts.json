@@ -1,0 +1,20 @@
+{
+  "type": "members",
+  "id": "id0",
+  "contacts": [
+    {
+      "name": "",
+      "lastname": ""
+    },
+    {
+      "name": "",
+      "lastname": ""
+    },
+  ],
+  "emergencyContacts": [
+    {
+      "name": "",
+      "lastname": ""
+    },
+  ]
+}

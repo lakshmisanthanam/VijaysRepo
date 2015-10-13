@@ -1,0 +1,15 @@
+{
+  "Products" : [ {
+    "productId" : "1.0",
+    "productName" : "Mule Soft",
+    "productPrice" : 99.0
+  }, {
+    "productId" : "2.0",
+    "productName" : "Spring",
+    "productPrice" : 129.0
+  }, {
+    "productId" : "3.0",
+    "productName" : "Dancer",
+    "productPrice" : 39.0
+  } ]
+}

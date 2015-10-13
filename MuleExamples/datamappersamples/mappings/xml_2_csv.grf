@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="vijay" created="Mon Sep 28 15:05:45 CDT 2015" description="XML 2 CSV" guiVersion="3.4.4.P" id="1443647133040" licenseCode="Unlicensed" licenseType="Unknown" modified="Mon Sep 28 15:05:45 CDT 2015" modifiedBy="vijay" name="XML_2_CSV" preview-file="${Project_Home}/src/main/api/Products.xsd" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __referenceCounter="2" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Output" id="d547281c-beea-440c-b894-8f6f56176e7b">
+<Record fieldDelimiter="," name="Input" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field containerType="SINGLE" label="productId" name="productId" size="10" type="string"/>
+<Field containerType="SINGLE" label="productName" name="productName" size="10" type="string"/>
+<Field containerType="SINGLE" eofAsDelimiter="true" label="productPrice" name="productPrice" size="10" type="string"/>
+<Field __artificialType="_id" name="__id" type="long"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __schemaType="{http://www.example.org/Products}Product" __sourcePath="{http://www.example.org/Products=ns0}/ns0:Products/ns0:Product" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="838caf0d-5a72-448c-a0d1-a17742505650" _parent_id="__parent_id" _type="Input" id="a08846e4-0504-4655-9d6a-df5410873c01">
+<Record fieldDelimiter="," name="Product" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __schemaType="{http://www.example.org/Products}Product" __sourcePath="{http://www.example.org/Products=ns0}/ns0:Products/ns0:Product/ns0:Id" containerType="SINGLE" label="Id" name="Id" type="string"/>
+<Field __index="1" __schemaType="{http://www.example.org/Products}Product" __sourcePath="{http://www.example.org/Products=ns0}/ns0:Products/ns0:Product/ns0:Name" containerType="SINGLE" label="Name" name="Name" type="string"/>
+<Field __index="2" __schemaType="{http://www.example.org/Products}Product" __sourcePath="{http://www.example.org/Products=ns0}/ns0:Products/ns0:Product/ns0:Price" containerType="SINGLE" label="Price" name="Price" type="string"/>
+</Record>
+</Metadata>
+<Metadata __filteredMetadata="false" __index="0" __referenceCounter="1" __schemaType="{http://www.example.org/Products}Products" __sourcePath="{http://www.example.org/Products=ns0}/ns0:Products" _dataStructure="OBJECT" _id="__id" _type="Input" id="838caf0d-5a72-448c-a0d1-a17742505650">
+<Record fieldDelimiter="," name="Products" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node charset="UTF-8" enabled="enabled" excludeFields="__id" fileURL="dict:outputPayload" guiName="CSV WRITER" guiX="900" guiY="20" id="DATA_WRITER0" quotedStrings="true" type="DATA_WRITER">
+<attr name="_data_format"><![CDATA[CSV]]></attr>
+<attr name="__dataSourceDefinition"><![CDATA[${Project_Home}/src/main/api/Input.csv]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'ns0:Products' -&gt; 'Input'" guiX="460" guiY="20" id="FOREACH_NS0_PRODUCTS_INPUT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = str2long(input.__id);
+//END -> DO NOT REMOVE
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'ns0:Product' -&gt; 'Input'" guiX="460" guiY="120" id="FOREACH_NS0_PRODUCT_INPUT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = str2long(input.__id);
+//END -> DO NOT REMOVE
+output.productId = input.Id;
+output.productName = input.Name;
+output.productPrice = input.Price;]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Simple Gather" guiX="680" guiY="20" id="SIMPLE_GATHER0" type="SIMPLE_GATHER"/>
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="XML READER" guiX="20" guiY="20" id="XML_READER0" type="XML_READER">
+<attr name="xmlSchemaURL"><![CDATA[./src/main/api/Products.xsd]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context namespacePaths="ns0=&quot;http://www.example.org/Products&quot;" outPort="0" sequenceField="__id" xpath="/ns0:Products">
+  <Context generatedKey="__parent_id" namespacePaths="ns0=&quot;http://www.example.org/Products&quot;" outPort="1" parentKey="__id" sequenceField="__id" xpath="ns0:Product">
+    <Mapping cloverField="Id" namespacePaths="ns0=&quot;http://www.example.org/Products&quot;" trim="true" xpath="ns0:Id"/>
+    <Mapping cloverField="Name" namespacePaths="ns0=&quot;http://www.example.org/Products&quot;" trim="true" xpath="ns0:Name"/>
+    <Mapping cloverField="Price" namespacePaths="ns0=&quot;http://www.example.org/Products&quot;" trim="true" xpath="ns0:Price"/>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[XML]]></attr>
+<attr name="__rootGlobalElementName"><![CDATA[{http://www.example.org/Products}Products]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="FOREACH_NS0_PRODUCTS_INPUT:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="d547281c-beea-440c-b894-8f6f56176e7b" outPort="Port 0 (out)" toNode="SIMPLE_GATHER0:0"/>
+<Edge debugMode="true" fromNode="FOREACH_NS0_PRODUCT_INPUT:0" guiBendpoints="" id="Edge4" inPort="Port 1 (in)" metadata="d547281c-beea-440c-b894-8f6f56176e7b" outPort="Port 0 (out)" toNode="SIMPLE_GATHER0:1"/>
+<Edge debugMode="true" fromNode="SIMPLE_GATHER0:0" guiBendpoints="" id="Edge3" inPort="Port 0 (in)" metadata="d547281c-beea-440c-b894-8f6f56176e7b" outPort="Port 0 (out)" toNode="DATA_WRITER0:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="838caf0d-5a72-448c-a0d1-a17742505650" outPort="Port 0 (out)" toNode="FOREACH_NS0_PRODUCTS_INPUT:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:1" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="a08846e4-0504-4655-9d6a-df5410873c01" outPort="Port 1 (out)" toNode="FOREACH_NS0_PRODUCT_INPUT:0"/>
+</Phase>
+</Graph>

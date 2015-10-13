@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="vijay" created="Wed Sep 09 22:43:40 CDT 2015" description="CSV To JSON" guiVersion="3.4.4.P" id="1442154186579" licenseCode="Unlicensed" licenseType="Unknown" modified="Wed Sep 09 22:43:40 CDT 2015" modifiedBy="vijay" name="CSV_To_JSON" preview-file="${Project_Home}/archive/Sample.csv" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object/books" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="714317ca-c77d-4bc0-bb41-43ce33ffedf7" _parent_id="__parent_id" _type="Output" id="ab3f509c-41cd-44aa-97be-379b61e5b6ea">
+<Record fieldDelimiter="," name="books" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/books/bookid" containerType="SINGLE" label="bookid" name="bookid" type="string"/>
+<Field __index="1" __sourcePath="{}/object/books/book_x005fname" containerType="SINGLE" label="book_name" name="book_name" type="string"/>
+<Field __index="2" __sourcePath="{}/object/books/authorname" containerType="SINGLE" label="authorname" name="authorname" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="0" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="714317ca-c77d-4bc0-bb41-43ce33ffedf7">
+<Record fieldDelimiter="," name="object" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+</Record>
+</Metadata>
+<Metadata __referenceCounter="1" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Input" id="a4f5dc81-31c9-4850-84de-96f076fb045b">
+<Record fieldDelimiter="," name="Sample" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field containerType="SINGLE" label="bookid" name="bookid" size="10" type="string"/>
+<Field containerType="SINGLE" label="bookname" name="bookname" size="10" type="string"/>
+<Field containerType="SINGLE" eofAsDelimiter="true" label="authorname" name="authorname" size="10" type="string"/>
+<Field __artificialType="_id" auto_filling="global_row_count" name="__id" type="long"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="CSV READER" guiX="20" guiY="20" id="DATA_READER0" quoteCharacter="both" quotedStrings="true" skipRows="1" trim="true" type="DATA_READER">
+<attr name="_data_format"><![CDATA[CSV]]></attr>
+<attr name="__dataSourceDefinition"><![CDATA[${Project_Home}/archive/Sample.csv]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'Sample' -&gt; 'books'" guiX="460" guiY="20" id="FOREACH_SAMPLE_BOOKS" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = num2str(input.__id);
+output.__parent_id = num2str(input.__id);
+//END -> DO NOT REMOVE
+output.bookid = input.bookid;
+output.authorname = input.authorname;
+output.book_name = input.bookname;]]></attr>
+</Node>
+<Node cacheInMemory="true" charset="UTF-8" enabled="enabled" fileURL="dict:outputPayload" guiName="JSON WRITER" guiX="900" guiY="20" id="JSON_WRITER0" type="JSON_WRITER">
+<attr name="__isJsonSchema"><![CDATA[false]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<object xmlns:clover="http://www.cloveretl.com/ns/xmlmapping">
+  <clover:collection clover:name="books">
+    <item clover:inPort="0">
+      <bookid>$0.bookid</bookid>
+      <clover:element clover:name="book_name">$0.book_name</clover:element>
+      <authorname>$0.authorname</authorname>
+    </item>
+  </clover:collection>
+</object>]]></attr>
+<attr name="_data_format"><![CDATA[JSON]]></attr>
+<attr name="jsonSchemaURL"><![CDATA[./src/main/resources/jsonsample.json]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="DATA_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="a4f5dc81-31c9-4850-84de-96f076fb045b" outPort="Port 0 (output)" toNode="FOREACH_SAMPLE_BOOKS:0"/>
+<Edge debugMode="true" fromNode="FOREACH_SAMPLE_BOOKS:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="ab3f509c-41cd-44aa-97be-379b61e5b6ea" outPort="Port 0 (out)" toNode="JSON_WRITER0:0"/>
+</Phase>
+</Graph>

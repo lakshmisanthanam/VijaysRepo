@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contact_list type="members" id="id0">
+  <contacts>
+    <user name="John" lastname="Harrison" phone="1111 1111"/>
+    <user name="Jane" lastname="Doe" phone="2222 2222"/>
+    <user name="Harry" lastname="Hausen" phone="3333 3333"/>
+  </contacts>
+  <emergency_contacts>
+    <user name="Larry" lastname="Larson" phone="4444 4444"/>
+    <user name="Harry" lastname="Harrison" phone="5555 5555"/>
+    <user name="John" lastname="Johnson" phone="6666 6666"/>
+  </emergency_contacts>
+</contact_list>

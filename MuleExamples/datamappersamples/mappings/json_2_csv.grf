@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="vijay" created="Mon Sep 28 15:05:45 CDT 2015" description="JSON 2 CSV" guiVersion="3.4.4.P" id="1443647366918" licenseCode="Unlicensed" licenseType="Unknown" modified="Mon Sep 28 15:05:45 CDT 2015" modifiedBy="vijay" name="JSON_2_CSV" preview-file="${Project_Home}/src/main/api/Products.json" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __referenceCounter="2" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Output" id="0c7e0d20-dd16-4e4f-b6a2-bc3eb04e2138">
+<Record fieldDelimiter="," name="Input" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field containerType="SINGLE" label="productId" name="productId" size="10" type="string"/>
+<Field containerType="SINGLE" label="productName" name="productName" size="10" type="string"/>
+<Field containerType="SINGLE" eofAsDelimiter="true" label="productPrice" name="productPrice" size="10" type="string"/>
+<Field __artificialType="_id" name="__id" type="long"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="a980280e-aef6-4a32-b352-b79f77c6ef93">
+<Record fieldDelimiter="," name="object" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __implementationClass="java.lang.String" __index="4" __sourcePath="{}/object/ProductsDesc" containerType="SINGLE" label="ProductsDesc" name="ProductsDesc" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object/Products" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="a980280e-aef6-4a32-b352-b79f77c6ef93" _parent_id="__parent_id" _type="Input" id="53b4675a-9441-42af-9209-558ef7a925fc">
+<Record fieldDelimiter="," name="Products" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __implementationClass="java.lang.Number" __index="0" __sourcePath="{}/object/Products/productId" containerType="SINGLE" label="productId" name="productId" type="number"/>
+<Field __implementationClass="java.lang.String" __index="1" __sourcePath="{}/object/Products/productName" containerType="SINGLE" label="productName" name="productName" type="string"/>
+<Field __implementationClass="java.lang.Number" __index="2" __sourcePath="{}/object/Products/productPrice" containerType="SINGLE" label="productPrice" name="productPrice" type="number"/>
+<Field __implementationClass="java.lang.String" __index="3" __sourcePath="{}/object/Products/productType" containerType="SINGLE" label="productType" name="productType" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node charset="UTF-8" enabled="enabled" excludeFields="__id" fileURL="dict:outputPayload" guiName="CSV WRITER" guiX="900" guiY="20" id="DATA_WRITER0" quotedStrings="true" type="DATA_WRITER">
+<attr name="_data_format"><![CDATA[CSV]]></attr>
+<attr name="__dataSourceDefinition"><![CDATA[${Project_Home}/src/main/api/Input.csv]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'object' -&gt; 'Input'" guiX="460" guiY="20" id="FOREACH_OBJECT_INPUT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = str2long(input.__id);
+//END -> DO NOT REMOVE
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'Products' -&gt; 'Input'" guiX="460" guiY="120" id="FOREACH_PRODUCTS_INPUT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = str2long(input.__id);
+//END -> DO NOT REMOVE
+output.productId = num2str(input.productId) + " " + num2str(input.productId) + input.productName;
+output.productName = input.productName;
+output.productPrice = num2str(input.productPrice);
+]]></attr>
+</Node>
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="JSON READER" guiX="20" guiY="20" id="JSON_READER0" type="JSON_READER">
+<attr name="__isJsonSchema"><![CDATA[true]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context xpath="/root">
+  <Context outPort="0" sequenceField="__id" xpath="object">
+    <Mapping cloverField="ProductsDesc" trim="true" xpath="ProductsDesc"/>
+    <Context generatedKey="__parent_id" outPort="1" parentKey="__id" sequenceField="__id" xpath="Products">
+      <Mapping cloverField="productId" trim="true" xpath="productId"/>
+      <Mapping cloverField="productName" trim="true" xpath="productName"/>
+      <Mapping cloverField="productPrice" trim="true" xpath="productPrice"/>
+      <Mapping cloverField="productType" trim="true" xpath="productType"/>
+    </Context>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JSON]]></attr>
+<attr name="jsonSchemaURL"><![CDATA[./src/main/api/Products.json]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Simple Gather" guiX="680" guiY="20" id="SIMPLE_GATHER0" type="SIMPLE_GATHER"/>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_INPUT:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="0c7e0d20-dd16-4e4f-b6a2-bc3eb04e2138" outPort="Port 0 (out)" toNode="SIMPLE_GATHER0:0"/>
+<Edge debugMode="true" fromNode="FOREACH_PRODUCTS_INPUT:0" guiBendpoints="" id="Edge4" inPort="Port 1 (in)" metadata="0c7e0d20-dd16-4e4f-b6a2-bc3eb04e2138" outPort="Port 0 (out)" toNode="SIMPLE_GATHER0:1"/>
+<Edge debugMode="true" fromNode="JSON_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="a980280e-aef6-4a32-b352-b79f77c6ef93" outPort="Port 0 (out)" toNode="FOREACH_OBJECT_INPUT:0"/>
+<Edge debugMode="true" fromNode="JSON_READER0:1" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="53b4675a-9441-42af-9209-558ef7a925fc" outPort="Port 1 (out)" toNode="FOREACH_PRODUCTS_INPUT:0"/>
+<Edge debugMode="true" fromNode="SIMPLE_GATHER0:0" guiBendpoints="" id="Edge3" inPort="Port 0 (in)" metadata="0c7e0d20-dd16-4e4f-b6a2-bc3eb04e2138" outPort="Port 0 (out)" toNode="DATA_WRITER0:0"/>
+</Phase>
+</Graph>

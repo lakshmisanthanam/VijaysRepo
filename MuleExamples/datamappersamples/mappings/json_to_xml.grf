@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="vijay" created="Wed Sep 09 22:43:40 CDT 2015" description="JSON To XML" guiVersion="3.4.4.P" id="1442159866987" licenseCode="Unlicensed" licenseType="Unknown" modified="Wed Sep 09 22:43:40 CDT 2015" modifiedBy="vijay" name="JSON_To_XML" preview-file="${Project_Home}/src/main/resources/books_sample.json" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="1" __schemaType="{http://www.example.org/books}Book" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books/ns0:Book" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="bc2be263-d456-46ce-b123-2a87120a040e" _parent_id="__parent_id" _type="Output" id="11370271-8f59-4ed5-9ec9-5634f5dec224">
+<Record fieldDelimiter="," name="Book" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __schemaType="{http://www.example.org/books}Book" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books/ns0:Book/ns0:bookId" containerType="SINGLE" label="bookId" name="bookId" type="string"/>
+<Field __index="1" __schemaType="{http://www.example.org/books}Book" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books/ns0:Book/ns0:bookName" containerType="SINGLE" label="bookName" name="bookName" type="string"/>
+<Field __index="2" __schemaType="{http://www.example.org/books}Book" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books/ns0:Book/ns0:authorName" containerType="SINGLE" label="authorName" name="authorName" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object/books" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="19c2183f-b0e9-4603-9b4d-d67d8f26c19b" _parent_id="__parent_id" _type="Input" id="d4b59d88-5ad5-4905-a4c6-adff4f76ca7f">
+<Record fieldDelimiter="," name="books" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __implementationClass="java.lang.String" __index="0" __sourcePath="{}/object/books/book/authorname" containerType="SINGLE" label="authorname" name="authorname" type="string"/>
+<Field __implementationClass="java.lang.String" __index="1" __sourcePath="{}/object/books/book/book_x005fname" containerType="SINGLE" label="book_name" name="book_name" type="string"/>
+<Field __implementationClass="java.lang.String" __index="2" __sourcePath="{}/object/books/book/bookid" containerType="SINGLE" label="bookid" name="bookid" type="string"/>
+</Record>
+</Metadata>
+<Metadata __filteredMetadata="false" __index="0" __referenceCounter="1" __schemaType="{http://www.example.org/books}Books" __sourcePath="{http://www.example.org/books=ns0}/ns0:Books" _dataStructure="OBJECT" _id="__id" _type="Output" id="bc2be263-d456-46ce-b123-2a87120a040e">
+<Record fieldDelimiter="," name="Books" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="19c2183f-b0e9-4603-9b4d-d67d8f26c19b">
+<Record fieldDelimiter="," name="object" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node cacheInMemory="true" charset="UTF-8" enabled="enabled" fileURL="dict:outputPayload" guiName="XML WRITER" guiX="900" guiY="20" id="EXT_XML_WRITER0" type="EXT_XML_WRITER" xmlSchemaURL="./src/main/resources/books.xsd">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<clover:element clover:name="ns0:Books" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" xmlns:ns0="http://www.example.org/books" clover:inPort="0">
+  <clover:element clover:name="ns0:Book" clover:inPort="1" clover:key="__parent_id" clover:parentKey="__id">
+    <clover:element clover:name="ns0:bookId">$1.bookId</clover:element>
+    <clover:element clover:name="ns0:bookName">$1.bookName</clover:element>
+    <clover:element clover:name="ns0:authorName">$1.authorName</clover:element>
+  </clover:element>
+</clover:element>]]></attr>
+<attr name="_data_format"><![CDATA[XML]]></attr>
+<attr name="__rootGlobalElementName"><![CDATA[{http://www.example.org/books}Books]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'books' -&gt; 'ns0:Book'" guiX="460" guiY="120" id="FOREACH_BOOKS_NS0_BOOK" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+output.__parent_id = input.__parent_id;
+//END -> DO NOT REMOVE
+output.authorName = input.authorname;
+output.bookId = input.bookid;
+output.bookName = input.book_name;]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'object' -&gt; 'ns0:Books'" guiX="460" guiY="20" id="FOREACH_OBJECT_NS0_BOOKS" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+]]></attr>
+</Node>
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="JSON READER" guiX="20" guiY="20" id="JSON_READER0" type="JSON_READER">
+<attr name="__isJsonSchema"><![CDATA[true]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context xpath="/root">
+  <Context outPort="0" sequenceField="__id" xpath="object">
+    <Context generatedKey="__parent_id" outPort="1" parentKey="__id" sequenceField="__id" xpath="books">
+      <Mapping cloverField="authorname" trim="true" xpath="book/authorname"/>
+      <Mapping cloverField="book_name" trim="true" xpath="book/book_x005fname"/>
+      <Mapping cloverField="bookid" trim="true" xpath="book/bookid"/>
+    </Context>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JSON]]></attr>
+<attr name="jsonSchemaURL"><![CDATA[./src/main/resources/books.json]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="FOREACH_BOOKS_NS0_BOOK:0" guiBendpoints="" id="Edge3" inPort="Port 1 (in)" metadata="11370271-8f59-4ed5-9ec9-5634f5dec224" outPort="Port 0 (out)" toNode="EXT_XML_WRITER0:1"/>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_NS0_BOOKS:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="bc2be263-d456-46ce-b123-2a87120a040e" outPort="Port 0 (out)" toNode="EXT_XML_WRITER0:0"/>
+<Edge debugMode="true" fromNode="JSON_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="19c2183f-b0e9-4603-9b4d-d67d8f26c19b" outPort="Port 0 (out)" toNode="FOREACH_OBJECT_NS0_BOOKS:0"/>
+<Edge debugMode="true" fromNode="JSON_READER0:1" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="d4b59d88-5ad5-4905-a4c6-adff4f76ca7f" outPort="Port 1 (out)" toNode="FOREACH_BOOKS_NS0_BOOK:0"/>
+</Phase>
+</Graph>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="vijay" created="Mon Sep 28 15:05:45 CDT 2015" description="CSV 2 JSON" guiVersion="3.4.4.P" id="1443632452279" licenseCode="Unlicensed" licenseType="Unknown" modified="Mon Sep 28 15:05:45 CDT 2015" modifiedBy="vijay" name="CSV_2_JSON" preview-file="${Project_Home}/src/main/api/Input.csv" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __referenceCounter="1" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Input" id="47b0096a-4f4e-4d47-b802-56b90ebe5d98">
+<Record fieldDelimiter="," name="Input" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field containerType="SINGLE" label="productId" name="productId" size="10" type="string"/>
+<Field containerType="SINGLE" label="productName" name="productName" size="10" type="string"/>
+<Field containerType="SINGLE" eofAsDelimiter="true" label="productPrice" name="productPrice" size="10" type="string"/>
+<Field __artificialType="_id" auto_filling="global_row_count" name="__id" type="long"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="0" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="497e7368-202f-42f2-b14a-b5425261c73b">
+<Record fieldDelimiter="," name="object" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __implementationClass="java.lang.String" __index="4" __sourcePath="{}/object/ProductsDesc" containerType="SINGLE" label="ProductsDesc" name="ProductsDesc" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object/Products" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="497e7368-202f-42f2-b14a-b5425261c73b" _parent_id="__parent_id" _type="Output" id="19da6a0f-fdf3-4fdd-9faf-abf86563879e">
+<Record fieldDelimiter="," name="Products" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __implementationClass="java.lang.Number" __index="0" __sourcePath="{}/object/Products/productId" containerType="SINGLE" label="productId" name="productId" type="number"/>
+<Field __implementationClass="java.lang.String" __index="1" __sourcePath="{}/object/Products/productName" containerType="SINGLE" label="productName" name="productName" type="string"/>
+<Field __implementationClass="java.lang.Number" __index="2" __sourcePath="{}/object/Products/productPrice" containerType="SINGLE" label="productPrice" name="productPrice" type="number"/>
+<Field __implementationClass="java.lang.String" __index="3" __sourcePath="{}/object/Products/productType" containerType="SINGLE" label="productType" name="productType" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="CSV READER" guiX="20" guiY="20" id="DATA_READER0" quoteCharacter="both" quotedStrings="true" skipRows="1" trim="true" type="DATA_READER">
+<attr name="_data_format"><![CDATA[CSV]]></attr>
+<attr name="__dataSourceDefinition"><![CDATA[${Project_Home}/src/main/api/Input.csv]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'Input' -&gt; 'Products'" guiX="460" guiY="20" id="FOREACH_INPUT_PRODUCTS" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = num2str(input.__id);
+output.__parent_id = num2str(input.__id);
+//END -> DO NOT REMOVE
+output.productId = str2double(input.productId);
+output.productName = input.productName;
+output.productPrice = str2double(input.productPrice);
+]]></attr>
+</Node>
+<Node cacheInMemory="true" charset="UTF-8" enabled="enabled" fileURL="dict:outputPayload" guiName="JSON WRITER" guiX="900" guiY="20" id="JSON_WRITER0" type="JSON_WRITER">
+<attr name="__isJsonSchema"><![CDATA[true]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<object xmlns:clover="http://www.cloveretl.com/ns/xmlmapping">
+  <clover:collection clover:name="Products">
+    <item clover:inPort="0">
+      <productId>$0.productId</productId>
+      <productName>$0.productName</productName>
+      <productPrice>$0.productPrice</productPrice>
+      <productType>$0.productType</productType>
+    </item>
+  </clover:collection>
+</object>]]></attr>
+<attr name="_data_format"><![CDATA[JSON]]></attr>
+<attr name="jsonSchemaURL"><![CDATA[./src/main/api/Products.json]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="DATA_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="47b0096a-4f4e-4d47-b802-56b90ebe5d98" outPort="Port 0 (output)" toNode="FOREACH_INPUT_PRODUCTS:0"/>
+<Edge debugMode="true" fromNode="FOREACH_INPUT_PRODUCTS:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="19da6a0f-fdf3-4fdd-9faf-abf86563879e" outPort="Port 0 (out)" toNode="JSON_WRITER0:0"/>
+</Phase>
+</Graph>

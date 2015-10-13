@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+    <data-mapper:config name="CSV_2_XML" transformationGraphPath="csv_2_xml.grf" doc:name="CSV_2_XML"/>
+    <data-mapper:config name="CSV_2_JSON" transformationGraphPath="csv_2_json.grf" doc:name="CSV_2_JSON"/>
+    <data-mapper:config name="XML_2_CSV" transformationGraphPath="xml_2_csv.grf" doc:name="XML_2_CSV"/>
+    <data-mapper:config name="JSON_2_CSV" transformationGraphPath="json_2_csv.grf" doc:name="JSON_2_CSV"/>
+    <data-mapper:config name="XML_COMPLEX_To_CSV" transformationGraphPath="xml_complex_to_csv.grf" doc:name="XML_COMPLEX_To_CSV"/>
+    <data-mapper:config name="XML_2_JSON" transformationGraphPath="xml_2_json.grf" doc:name="XML_2_JSON"/>
+    <data-mapper:config name="Map_2_CSV" transformationGraphPath="map_2_csv.grf" doc:name="Map_2_CSV"/>
+    <flow name="datamapper-samplesFlow">
+        <file:inbound-endpoint path="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\input" moveToDirectory="C:\Users\vijay\AnypointStudio\workspace\datamappersamples\archive" pollingFrequency="3000" responseTimeout="10000" doc:name="File"/>
+        <logger message="#[message.inboundProperties.originalFilename]" level="INFO" doc:name="Print File Name"/>
+        <choice doc:name="Choice">
+            <when expression="#[message.inboundProperties.originalFilename == 'CSV_2_XML.txt']">
+                <logger message="Received CSV to XML request." level="INFO" doc:name="Print Request Type"/>
+                <data-mapper:transform config-ref="CSV_2_XML" doc:name="CSV 2 XML"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="DataMapper Result : #[payload]" level="INFO" doc:name="Result"/>
+            </when>
+            <when expression="#[message.inboundProperties.originalFilename == 'CSV_2_JSON.txt']">
+                <logger message="Received CSV to JSON request." level="INFO" doc:name="Print Request Type"/>
+                <data-mapper:transform config-ref="CSV_2_JSON" doc:name="CSV 2 JSON"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="DataMapper Result : #[payload]" level="INFO" doc:name="Result"/>
+            </when>
+            <when expression="#[message.inboundProperties.originalFilename == 'XML_2_CSV.txt']">
+                <logger message="Received XML to CSV request." level="INFO" doc:name="Print Request Type"/>
+                <data-mapper:transform config-ref="XML_2_CSV" doc:name="XML 2 CSV"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="DataMapper Result : #[payload]" level="INFO" doc:name="Result"/>
+            </when>
+            <when expression="#[message.inboundProperties.originalFilename == 'XML_2_CSV_COMPLEX.txt']">
+                <logger message="Received XML to CSV request." level="INFO" doc:name="Print Request Type"/>
+                <data-mapper:transform config-ref="XML_COMPLEX_To_CSV" doc:name="XML COMPLEX To CSV"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="DataMapper Result : #[payload]" level="INFO" doc:name="Result"/>
+            </when>
+            <when expression="#[message.inboundProperties.originalFilename == 'JSON_2_CSV.txt']">
+                <logger message="Received JSON to CSV request." level="INFO" doc:name="Print Request Type"/>
+                <data-mapper:transform config-ref="JSON_2_CSV" doc:name="JSON 2 CSV"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="DataMapper Result : #[payload]" level="INFO" doc:name="Result"/>
+            </when>
+            <when expression="#[message.inboundProperties.originalFilename == 'XML_2_JSON.txt']">
+                <logger message="Received XML to JSON request." level="INFO" doc:name="Print Request Type"/>
+                <data-mapper:transform config-ref="XML_2_JSON" doc:name="XML 2 JSON"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="DataMapper Result : #[payload]" level="INFO" doc:name="Result"/>
+            </when>
+            <when expression="#[message.inboundProperties.originalFilename == 'MAPS_2_JSON.txt']">
+                <logger message="Received XML to JSON request." level="INFO" doc:name="Print Request Type"/>
+                <scripting:component doc:name="Groovy">
+                    <scripting:script engine="Groovy"><![CDATA[java.util.HashMap<String,String> map1 = new java.util.HashMap<String, String>();
+map1.put ("keyData", "testing1");
+map1.put("ValueData", "test2");
+
+java.util.HashMap<String,String> map2 = new java.util.HashMap<String, String>();
+map2.put ("keyData", "testing3");
+map2.put("ValueData", "test4");
+
+java.util.List<java.util.Map<String, String>> data = new java.util.ArrayList<java.util.Map<String, String>>();
+data.add(map1);
+data.add(map2);
+
+payload=data;]]></scripting:script>
+                </scripting:component>
+                
+                
+                <data-mapper:transform config-ref="Map_2_CSV" doc:name="Map 2 CSV"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="DataMapper Result : #[payload]" level="INFO" doc:name="Result"/>
+            </when>
+            <otherwise>
+                <logger message="The input file dint match with our expected formats." level="INFO" doc:name="Print Default Msg"/>
+            </otherwise>
+        </choice>
+    </flow>
+</mule>
