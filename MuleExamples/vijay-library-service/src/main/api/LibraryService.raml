@@ -1,0 +1,14 @@
+#%RAML 0.8
+---
+title: Library Service
+mediaType: application/xml
+protocols: [ HTTP ]
+/book:
+  /findBooks: 
+  post: 
+    body: 
+      application/xml: 
+    responses: 
+      200: 
+         body: 
+            application/xml: 

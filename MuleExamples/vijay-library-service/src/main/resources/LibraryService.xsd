@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/LibraryService" xmlns:tns="http://www.example.org/LibraryService" elementFormDefault="qualified">
+
+    <complexType name="AddBookRequest">
+    	<sequence>
+    		<element name="book" type="tns:Book"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="Book">
+    	<sequence>
+    		<element name="id" type="string"></element>
+    		<element name="name" type="string"></element>
+    		<element name="author" type="string"></element>
+    		<element name="publisher" type="string"></element>
+    		<element name="year" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="AddBookRequest" type="tns:AddBookRequest"></element>
+
+    <complexType name="AddBookResponse">
+    	<sequence>
+    		<element name="statusCode" type="string"></element>
+    		<element name="statusMessage" type="string"></element>
+    		<element name="id" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="AddBookResponse" type="tns:AddBookResponse"></element>
+</schema>

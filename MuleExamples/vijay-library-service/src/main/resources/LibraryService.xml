@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:AddBookRequest xmlns:tns="http://www.example.org/LibraryService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/LibraryService LibraryService.xsd ">
+  <tns:book>
+    <tns:id>tns:id</tns:id>
+    <tns:name>tns:name</tns:name>
+    <tns:author>tns:author</tns:author>
+    <tns:publisher>tns:publisher</tns:publisher>
+    <tns:year>tns:year</tns:year>
+  </tns:book>
+</tns:AddBookRequest>

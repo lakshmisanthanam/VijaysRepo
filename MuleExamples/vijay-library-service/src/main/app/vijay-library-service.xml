@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+	<http:listener-config name="HTTP_REST_Config"
+		host="0.0.0.0" port="10000" doc:name="HTTP Listener Configuration" />
+	<vm:connector name="VM" validateConnections="true"
+		doc:name="VM" />
+
+	<spring:beans>
+		<spring:bean id="bookMaps" class="java.util.HashMap" />
+	</spring:beans>
+    <db:generic-config name="Generic_Database_Configuration" url="jdbc:mysql://localhost:3306/library?user=library&amp;password=library" driverClassName="${jdbc.driver.classname}" doc:name="Library Database Configuration">
+        <reconnect/>
+    </db:generic-config>
+    <sub-flow name="add-book-flow">
+        <set-variable variableName="origPayload" value="#[payload]" doc:name="Variable"/>
+        <expression-component doc:name="Add to Books Maps"><![CDATA[#[app.registry.bookMaps.put(payload.book.id, payload.book)]]]></expression-component>
+        <set-variable variableName="authorName" value="#[payload.book.author]" doc:name="Variable"/>
+        <transactional action="ALWAYS_BEGIN" doc:name="Transactional">
+            <flow-ref name="select-or-insert-author-subflow" doc:name="Flow Reference"/>
+            <choice doc:name="Choice">
+                <when expression="#[authorId == null]">
+                    <scripting:component doc:name="Return Failure">
+                        <scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.AddBookResponse resp = new org.vijay.services.rest.libraryservice.AddBookResponse();
+			resp.setStatusCode("500");
+			resp.setStatusMessage("Error occured in creating author record!");
+			payload = resp;]]></scripting:script>
+                    </scripting:component>
+                </when>
+                <otherwise>
+                    <flow-ref name="db-book-insert-flow" doc:name="Flow Reference"/>
+                    <logger message="Payload after BOOK insert:#[payload]" level="INFO" doc:name="Logger"/>
+                    <scripting:component doc:name="Return Success">
+                        <scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.AddBookResponse resp = new org.vijay.services.rest.libraryservice.AddBookResponse();
+			resp.setStatusCode("200");
+			resp.setStatusMessage("Book Added Successfully with Id:" + payload.get(0).get("BOOK_ID"));
+			payload = resp;]]></scripting:script>
+                    </scripting:component>
+                </otherwise>
+            </choice>
+        </transactional>
+    </sub-flow>
+    <flow name="db-book-insert-flow">
+        <db:insert config-ref="Generic_Database_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[INSERT INTO BOOK (NAME, AUTHOR_ID, PUBLISHER, YEAR) VALUES (#[origPayload.book.name], #[authorId], #[origPayload.book.publisher], #[origPayload.book.year])]]></db:parameterized-query>
+        </db:insert>
+        <set-variable variableName="bookName" value="#[origPayload.book.name]" doc:name="Variable" />
+        <flow-ref name="get-bookid-flow" doc:name="Flow Reference"/>
+    </flow>
+    <sub-flow name="get-bookid-flow">
+        <db:select config-ref="Generic_Database_Configuration" doc:name="Database">
+            <db:dynamic-query><![CDATA[SELECT BOOK_ID FROM BOOK WHERE NAME = "#[bookName]"]]></db:dynamic-query>
+        </db:select>
+    </sub-flow>
+    
+    <sub-flow name="select-or-insert-author-subflow">
+        <db:select config-ref="Generic_Database_Configuration" doc:name="Database">
+            <db:dynamic-query><![CDATA[SELECT AUTHOR_ID FROM AUTHOR WHERE NAME = "#[authorName]"]]></db:dynamic-query>
+        </db:select>
+        <choice doc:name="Choice">
+        	<when expression="#[payload.size() != 0]">
+        		 <set-variable variableName="authorId" value="#[payload.get(0).get('AUTHOR_ID')]" doc:name="Variable"/>
+        	</when>
+        	<otherwise>
+        		<!-- insert the new author info to database -->
+        		<db:insert config-ref="Generic_Database_Configuration" doc:name="Database">
+		            <db:parameterized-query><![CDATA[INSERT INTO AUTHOR (NAME) VALUES (#[authorName])]]></db:parameterized-query>
+		        </db:insert>
+		        <choice doc:name="Choice">
+		        	<when expression="#[payload == 1]">
+		        		<db:select config-ref="Generic_Database_Configuration" doc:name="Database">
+				            <db:dynamic-query><![CDATA[SELECT AUTHOR_ID FROM AUTHOR WHERE NAME = "#[authorName]"]]></db:dynamic-query>
+				        </db:select>
+				        <set-variable variableName="authorId" value="#[payload.get(0).get('AUTHOR_ID')]" doc:name="Variable"/>
+		        	</when>
+		        	<otherwise>
+		        		<set-variable variableName="authorId" value="INSERT OPERATION FAILED" doc:name="Variable"/>
+		        	</otherwise>
+		        </choice>
+        	</otherwise>
+        </choice> 
+    </sub-flow>
+
+	<flow name="vijay-library-serviceFlow">
+		<http:listener config-ref="HTTP_REST_Config" path="/*"
+			doc:name="Library Service" />
+		<logger message="Received Request: #[payload]" level="INFO"
+			doc:name="Log request payload" />
+		<jersey:resources doc:name="Library Service">
+			<component class="org.vijay.services.libraryservice.VijayLibraryService">
+				<binding
+					interface="org.vijay.services.libraryservice.VijayLibraryServiceBinding"
+					method="addBook">
+					<vm:outbound-endpoint exchange-pattern="request-response"
+						path="addBookVM" />
+				</binding>
+				<binding
+					interface="org.vijay.services.libraryservice.VijayLibraryServiceBinding"
+					method="updateBook">
+					<vm:outbound-endpoint exchange-pattern="request-response"
+						path="updateBookVM" />
+				</binding>
+				<binding
+					interface="org.vijay.services.libraryservice.VijayLibraryServiceBinding"
+					method="deleteBook">
+					<vm:outbound-endpoint exchange-pattern="request-response"
+						path="deleteBookVM" />
+				</binding>
+				<binding
+					interface="org.vijay.services.libraryservice.VijayLibraryServiceBinding"
+					method="findBook">
+					<vm:outbound-endpoint exchange-pattern="request-response"
+						path="findBookVM" />
+				</binding>
+				<binding
+					interface="org.vijay.services.libraryservice.VijayLibraryServiceBinding"
+					method="getBook">
+					<vm:outbound-endpoint exchange-pattern="request-response"
+						path="getBookVM" />
+				</binding>
+			</component>
+		</jersey:resources>
+	</flow>
+    <flow name="AddBookFlow">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="addBookVM" connector-ref="VM" doc:name="AddBookVM"/>
+        <logger message="Book Name: #[payload.getBook().getName()]" level="INFO" doc:name="Logger"/>
+        <choice doc:name="Validation Choice">
+            <when expression="#[payload.getBook() == null]">
+                <scripting:component doc:name="Return Invalid Request">
+                    <scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.AddBookResponse resp = new org.vijay.services.rest.libraryservice.AddBookResponse();
+resp.setStatusCode("400");
+resp.setStatusMessage("Book Object is null");
+payload = resp;]]></scripting:script>
+                </scripting:component>
+            </when>
+            <when expression="#[payload.getBook().getName() == null]">
+                <scripting:component doc:name="Return Book Name Invalid">
+                    <scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.AddBookResponse resp = new org.vijay.services.rest.libraryservice.AddBookResponse();
+resp.setStatusCode("400");
+resp.setStatusMessage("Book Name is null");
+payload = resp;]]></scripting:script>
+                </scripting:component>
+            </when>
+            <when expression="#[payload.book.author == null]">
+                <scripting:component doc:name="Return Book Author Invalid">
+                    <scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.AddBookResponse resp = new org.vijay.services.rest.libraryservice.AddBookResponse();
+resp.setStatusCode("400");
+resp.setStatusMessage("Book Author is null");
+payload = resp;]]></scripting:script>
+                </scripting:component>
+            </when>
+            <when expression="#[payload.getBook().getYear() == null]">
+                <scripting:component doc:name="Return Book Year Invalid">
+                    <scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.AddBookResponse resp = new org.vijay.services.rest.libraryservice.AddBookResponse();
+resp.setStatusCode("400");
+resp.setStatusMessage("Book Year is null");
+payload = resp;]]></scripting:script>
+                </scripting:component>
+            </when>
+            <otherwise>
+                <flow-ref name="add-book-flow" doc:name="Flow Reference"/>
+            </otherwise>
+        </choice>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+        	<scripting:component doc:name="Return Failure">
+               <scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.AddBookResponse resp = new org.vijay.services.rest.libraryservice.AddBookResponse();
+resp.setStatusCode("500");
+resp.setStatusMessage("Error occured in creating author record!" + message.getExceptionPayload().getRootException());
+payload = resp;]]></scripting:script>
+           </scripting:component>
+        </catch-exception-strategy>
+    </flow>
+	<flow name="UpdateBookFlow">
+		<vm:inbound-endpoint exchange-pattern="request-response"
+			doc:name="UpdateBookVM" connector-ref="VM" path="updateBookVM" />
+		<scripting:component doc:name="Groovy">
+			<scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.UpdateBookResponse resp = new org.vijay.services.rest.libraryservice.UpdateBookResponse();
+resp.setStatusCode("200");
+resp.setStatusMessage("TEST Upd");
+payload = resp;]]></scripting:script>
+		</scripting:component>
+	</flow>
+	<flow name="DeleteBookFlow">
+		<vm:inbound-endpoint exchange-pattern="request-response"
+			doc:name="DeleteBookVM" connector-ref="VM" path="deleteBookVM" />
+		<scripting:component doc:name="Groovy">
+			<scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.DeleteBookResponse resp = new org.vijay.services.rest.libraryservice.DeleteBookResponse();
+resp.setStatusCode("200");
+resp.setStatusMessage("TEST Del");
+payload = resp;]]></scripting:script>
+		</scripting:component>
+	</flow>
+	<flow name="FindBookFlow">
+		<vm:inbound-endpoint exchange-pattern="request-response"
+			doc:name="FindBookVM" connector-ref="VM" path="findBookVM" />
+		<set-variable variableName="books" value="#[new java.util.ArrayList()]"
+			doc:name="booksList" />
+		<db:select config-ref="Generic_Database_Configuration" doc:name="Database">
+            <db:dynamic-query><![CDATA[SELECT BK.BOOK_ID, BK.NAME, BK.PUBLISHER, BK.YEAR, AU.NAME AS AUTHOR_NAME FROM BOOK BK, AUTHOR AU WHERE BK.AUTHOR_ID = AU.AUTHOR_ID]]></db:dynamic-query>
+        </db:select>
+        <logger message="Payload after select All: #[payload]" level="INFO" doc:name="Logger"/>
+		<foreach collection="#[payload]" counterVariableName="i" doc:name="For Each">
+			<scripting:component doc:name="Groovy">
+				<scripting:script engine="Groovy"><![CDATA[
+	            org.vijay.services.rest.libraryservice.Book bk = new org.vijay.services.rest.libraryservice.Book();
+	            bk.setId(String.valueOf(payload.get("BOOK_ID")));
+				bk.setName(payload.get("NAME"));
+				bk.setPublisher(payload.get("PUBLISHER"));
+				bk.setAuthor(payload.get("AUTHOR_NAME"));
+				bk.setYear(payload.get("YEAR"));
+				books.add(bk);
+				]]></scripting:script>
+			</scripting:component>
+		</foreach>
+		<scripting:component doc:name="Groovy">
+			<scripting:script engine="Groovy"><![CDATA[
+            org.vijay.services.rest.libraryservice.FindBookResponse resp = new org.vijay.services.rest.libraryservice.FindBookResponse();
+            org.vijay.services.rest.libraryservice.BookList booksList = new org.vijay.services.rest.libraryservice.BookList();
+            resp.setBookList(booksList);
+            resp.setBooksCount(String.valueOf(books.size()));
+            resp.setStatusCode("200");
+            resp.setStatusMessage("Success");
+            booksList.getBooks().addAll(books);
+			payload = resp;
+			]]></scripting:script>
+		</scripting:component>
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<logger level="ERROR" message="#[exception]" doc:name="Logger"/>
+			<scripting:component doc:name="Groovy">
+				<scripting:script engine="Groovy"><![CDATA[
+            org.vijay.services.rest.libraryservice.FindBookResponse resp = new org.vijay.services.rest.libraryservice.FindBookResponse();
+            org.vijay.services.rest.libraryservice.BookList booksList = new org.vijay.services.rest.libraryservice.BookList();
+            resp.setBookList(booksList);
+            resp.setStatusCode("500");
+            resp.setStatusMessage("Error occured!" + message.getExceptionPayload().getRootException().getMessage());
+			payload = resp;
+			]]></scripting:script>
+			</scripting:component>
+		</catch-exception-strategy>
+	</flow>
+	<flow name="GetBookFlow">
+		<vm:inbound-endpoint exchange-pattern="request-response"
+			doc:name="GetBookVM" connector-ref="VM" path="getBookVM" />
+		<db:select config-ref="Generic_Database_Configuration" doc:name="Database">
+            <db:dynamic-query><![CDATA[SELECT BK.BOOK_ID, BK.NAME, BK.PUBLISHER, BK.YEAR, AU.NAME AS AUTHOR_NAME FROM BOOK BK, AUTHOR AU WHERE BK.AUTHOR_ID = AU.AUTHOR_ID AND BK.BOOK_ID = "#[payload.bookId]"]]></db:dynamic-query>
+        </db:select>
+        <logger message="Payload after GET : #[payload]" level="INFO" doc:name="Logger"/>
+        <choice doc:name="Choice">
+        	<when expression="#[payload.size() != 0]">
+        		<scripting:component doc:name="Groovy">
+					<scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.GetBookResponse resp = new org.vijay.services.rest.libraryservice.GetBookResponse();
+					org.vijay.services.rest.libraryservice.Book bk = new org.vijay.services.rest.libraryservice.Book();
+					resp.setStatusCode("200");
+					resp.setStatusMessage("Book Found");
+					resp.setBook(bk);
+					bk.setId(String.valueOf(payload.get(0).get("BOOK_ID")));
+					bk.setName(payload.get(0).get("NAME"));
+					bk.setPublisher(payload.get(0).get("PUBLISHER"));
+					bk.setAuthor(payload.get(0).get("AUTHOR_NAME"));
+					bk.setYear(payload.get(0).get("YEAR"));
+		payload = resp;]]></scripting:script>
+				</scripting:component>	
+        	</when>
+        	<otherwise>
+        		<scripting:component doc:name="Groovy">
+					<scripting:script engine="Groovy"><![CDATA[org.vijay.services.rest.libraryservice.GetBookResponse resp = new org.vijay.services.rest.libraryservice.GetBookResponse();
+					resp.setStatusCode("404");
+					resp.setStatusMessage("Book NotFound");
+		payload = resp;]]></scripting:script>
+				</scripting:component>
+        	</otherwise>
+        </choice>
+        
+	</flow>
+</mule>
