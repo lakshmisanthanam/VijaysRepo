@@ -17,8 +17,8 @@ In the words of Abraham Lincoln:
 * Item2
 * Item3
 
-- Item4
-- Item5
-- Item6
+- **Item4**
+- **Item5**
+- **Item6**
 
 https://help.github.com/articles/markdown-basics/
